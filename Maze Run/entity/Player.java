@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -12,17 +13,28 @@ import main.GamePanel;
 public class Player extends Entity{
     GamePanel gp;
     KeyHandler keyH;
+    public final int screenX;
+    public final int screenY;
 
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
         this.keyH = keyH;
+
+        screenX = gp.screenWidth/2 - (gp.tileSize/2);
+        screenY = gp.screenHeight/2 - (gp.tileSize/2);
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 16;
+        solidArea.width = 32;
+        solidArea.height = 32;
+
         setDefaultValue();
         setDefaultImage();
     }
 
     public void setDefaultValue(){
-        x = 100;
-        y = 100;
+        worldX = gp.tileSize * 23;
+        worldY = gp.tileSize * 21;
         speed = 4;
         direction = "down";
     }
@@ -51,26 +63,39 @@ public class Player extends Entity{
 
             if(keyH.upPressed == true){
                 direction = "up";
-                y -= speed;
-                // if(y<0) y = gp.screenHeight;
             }
             else if(keyH.downPressed == true){
                 direction = "down";
-                y += speed;
-                // if(y > gp.screenHeight) y = 0;
-            }
-    
+            }   
             else if(keyH.leftPressed == true){
-                direction = "left";
-                x -= speed;
-                // if(x < 0) x = gp.screenWidth;
+                direction = "left";                
             }
             else if(keyH.rightPressed == true){
                 direction = "right";
-                x += speed;
-                // if(x > gp.screenWidth) x = 0;
             }
-    
+
+            //Check Collusion
+            collusionOn = false;
+            gp.cChecker.checkTile(this);
+            
+            //if collusionOn is false the player can move
+            if(collusionOn == false){
+                switch(direction){
+                    case "up":
+                    worldY -= speed;
+                    break;
+                    case "down":
+                    worldY += speed;
+                    break;
+                    case "left":
+                    worldX -= speed;
+                    break;
+                    case "right":
+                    worldX += speed;
+                    break;
+                }
+            }
+
             sprite_counter++;
             if(sprite_counter > 12){
                 if(sprite_number == 1){
@@ -131,7 +156,7 @@ public class Player extends Entity{
                 }
             break;
         }
-        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
     }
 }
