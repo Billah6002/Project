@@ -12,6 +12,7 @@ public class Entity {
     public int sprite_number = 1;
 
     public Rectangle solidArea;
+    public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collusionOn = false;
     
 }

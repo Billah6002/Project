@@ -104,7 +104,7 @@ public class TileManeger {
 
                 g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
-               }
+            }
 
             worldCol++;
 
